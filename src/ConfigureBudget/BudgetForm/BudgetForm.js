@@ -99,7 +99,7 @@ const BudgetForm = (props) => {
           Manage your budget
         </DialogTitle>
         <DialogContent>
-          <Tooltip title={budgetsData && budgetsData.length != 0 ? "You can reset your budget next month!" : "Submit your budget"}>
+          {/* <Tooltip title={budgetsData && budgetsData.length != 0 ? "You can reset your budget next month!" : "Submit your budget"}>
 
             <TextField
               required
@@ -110,11 +110,11 @@ const BudgetForm = (props) => {
               fullWidth
               // disabled={budgetsData && budgetsData.length != 0}
               margin="normal"
-              value={monthlyBudget}
+              value={monthlyBudget}s
               onChange={(e) => setMonthlyBudget(e.target.value)}
             />
-          </Tooltip>
-          <Tooltip title={budgetsData && budgetsData.length != 0 ? "You can reset your budget next month!" : "Submit your budget"}>
+          </Tooltip> */}
+          {/* <Tooltip title={budgetsData && budgetsData.length != 0 ? "You can reset your budget next month!" : "Submit your budget"}>
             <TextField
               required
               id="outlined-required-budget-name"
@@ -126,7 +126,7 @@ const BudgetForm = (props) => {
               value={budgetName}
               onChange={(e) => setBudgetName(e.target.value)}
             />
-          </Tooltip>
+          </Tooltip> */}
           {/* <div className="categoryContainer"> */}
           <TextField
             required
