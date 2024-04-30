@@ -28,7 +28,7 @@ const App = (props) => {
         <Routes>
           <Route path="/cofigureBudget" element={<ConfigureBudget />} />
           <Route path="/addExpense" element={<ConfigExpanses />} />
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/signin" element={<Login />} />
           <Route path="*" element={<Login />} />
         </Routes>

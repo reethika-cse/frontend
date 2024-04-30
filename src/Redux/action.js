@@ -60,7 +60,7 @@ export const submitUser = (username, email, password,navigate) => {
     Axios.post('/user/signup', data)
       .then((res) => {
         dispatch({ type: ADD_USER_FULFILLED, payload: res.data });
-        navigate('/')
+        navigate('/dashboard')
       })
       .catch((error) => {
         dispatch({ type: ADD_USER_REJECTED, payload: error?.response?.data?.message })
@@ -87,7 +87,7 @@ export const loginUser = (email, password, navigate) => {
       .then((res) => {
         // console.log(res.data)
         dispatch({ type: AUTHENTICATE_USER_FULFILLED, payload: res.data });
-        navigate('/');
+        navigate('/dashboard');
       })
       .catch((err) => {
         dispatch({ type: AUTHENTICATE_USER_REJECTED, payload: err?.response?.data?.message });
@@ -110,7 +110,7 @@ export const getBudgetData = () => {
 };
 
 
-export const addBudgetData = (budgetName, totalAmount, catagories) => {
+export const addBudgetData = (budgetName, totalAmount, catagories, categoryName) => {
   
   const catagoriesArray = Object.entries(catagories).map(([name, amount]) => ({
     name,
@@ -125,24 +125,42 @@ export const addBudgetData = (budgetName, totalAmount, catagories) => {
       totalAmount,
 
     }
-  }
+  };
 
-  // const budget = {
-  // }
-  // console.log(data)
   return (dispatch) => {
     dispatch({ type: ADD_USER_BUDGET_PENDING });
     Axios.post('/budget/createBudget', data)
     .then((res) => {
       dispatch({ type: ADD_USER_BUDGET_FULFILLED, payload: res.data });
       dispatch(getBudgetData());
+      const { budgetData: { _id } } = res.data;
+      dispatch(createCatgory(categoryName, totalAmount, _id));
     })
     .catch(err => {
       dispatch({ type: ADD_USER_BUDGET_REJECTED, payload: err?.response?.data?.message });
     })
   }
 }
-
+export const addExpense = (description, amount, categoryId, date) => {
+  const data = {
+    description,
+    amount,
+    categoryId,
+    date,
+  }
+  console.log(data);
+  return (dispatch) => {
+    dispatch({ type: ADD_USER_EXPANSE_PENDING })
+    Axios.post('/budget/createExpanse', data)
+    .then(res => {
+      dispatch({ type: ADD_USER_EXPANSE_FULFILLED, payload: res.data });
+      dispatch(getExpenses());
+    })
+    .catch(err => {
+      dispatch({ type: ADD_USER_EXPANSE_REJECTED, payload: err?.response?.data?.message });
+    })
+  }
+}
 export const createCatgory = (name,allocatedAmount,budgetId) => {
   const data = {
     name,
@@ -154,12 +172,14 @@ export const createCatgory = (name,allocatedAmount,budgetId) => {
     Axios.post('/budget/addCategory', data)
     .then((res) => {
       dispatch({ type: ADD_BUDGET_CATEGORY_FULFILLED, payload: res.data });
+      dispatch(getBudgetData())
     })
     .catch(err => {
       dispatch({ type: ADD_BUDGET_CATEGORY_REJECTED, payload: err?.response?.data?.message })
     })
   }
 }
+
 
 
 export const getAllExpensesAndDate = () => {
@@ -193,11 +213,9 @@ export const getAccessToken = () => {
 }
 
 
-export const getExpenses = (categoryId) => {
+export const getExpenses = () => {
 
   return (dispatch) => {
-    // const { expensesData } = getState();
-    // console.log(expensesData)
     dispatch({ type: GET_USER_EXPANSE_PENDING });
     Axios.get('/budget/getExpanses')
     .then(res => {
@@ -244,22 +262,3 @@ export const deleteExpense = (_id) => {
 }
 
 
-export const addExpense = (description, amount, categoryId, date) => {
-  const data = {
-    description,
-    amount,
-    categoryId,
-    date,
-  }
-  return (dispatch) => {
-    dispatch({ type: ADD_USER_EXPANSE_PENDING })
-    Axios.post('/budget/createExpanse', data)
-    .then(res => {
-      dispatch({ type: ADD_USER_EXPANSE_FULFILLED, payload: res.data });
-      dispatch(getExpenses());
-    })
-    .catch(err => {
-      dispatch({ type: ADD_USER_EXPANSE_REJECTED, payload: err?.response?.data?.message });
-    })
-  }
-}

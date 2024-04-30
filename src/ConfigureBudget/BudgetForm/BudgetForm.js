@@ -4,17 +4,14 @@ import './BudgetForm.css'; // Import your CSS file
 import { call } from '../../Services/call';
 
 const BudgetForm = (props) => {
-  const [monthlyBudget, setMonthlyBudget] = useState('');
-  const [budgetName, setBudgetName] = useState('');
-  // const [category, setCategory] = useState('');
-  // const [categoryBudget, setCategoryBudget] = useState('');
+  const [monthlyBudget, setMonthlyBudget] = useState(10000);
+  const [budgetName, setBudgetName] = useState('MonthlyBudget');
   const [catagory, setCatagory] = useState("");
   const [chipData, setChipData] = useState({});
-  // const [monthlyBudget, setMonthlyBudget] = useState(0);
   const [catagoryBudget, setCatagoryBudget] = useState("");
   const [calculatedAmmount, setCalculatedAmmount] = useState(0);
   const [budgetId, setBudgetId] = useState("");
-  // const [budgetName, setBudgetName] = useState("");
+
   const {
     open,
     setOpen,
@@ -50,24 +47,8 @@ const BudgetForm = (props) => {
       setCalculatedAmmount(totalCategoryAmount);
     }
   }, [budgetsData]);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handleChipData = async () => {
-    if (budgetsData && Object.keys(budgetsData).length > 0) {
-      await call(createCatgory, catagory, catagoryBudget, budgetId)
-      // try {
-      //   await createCatgory(catagory, catagoryBudget, budgetId);
-      // } catch (er) {
-      //   alert("Something went Wrong");
-      // }
-    }
-    // else {
     const newChipObject = {
       ...chipData,
       ...{ [catagory]: catagoryBudget },
@@ -76,8 +57,12 @@ const BudgetForm = (props) => {
       parseInt(calculatedAmmount) + parseInt(catagoryBudget)
     );
     setChipData(newChipObject);
-    // }
-    // handleDataSubmit();
+    if (budgetsData && budgetsData.length != 0) {
+      await call(createCatgory, catagory, catagoryBudget, budgetId)
+    }
+    else {
+      await call(addBudgetData, budgetName, catagoryBudget, chipData, catagory)
+    }
     setCatagoryBudget("");
     setCatagory("");
   };
@@ -86,11 +71,6 @@ const BudgetForm = (props) => {
   const handleDataSubmit = async () => {
     await call(addBudgetData, budgetName, monthlyBudget, chipData)
     setOpen(false);
-    // try {
-    //   await addBudgetData(budgetName, monthlyBudget, chipData);
-    // } catch (er) {
-    //   alert("Something went Wrong");
-    // }
   };
   return (
     <div>
@@ -99,7 +79,7 @@ const BudgetForm = (props) => {
           Manage your budget
         </DialogTitle>
         <DialogContent>
-          <Tooltip title={budgetsData && budgetsData.length != 0 ? "You can reset your budget next month!" : "Submit your budget"}>
+          {/* <Tooltip title={budgetsData && budgetsData.length != 0 ? "You can reset your budget next month!" : "Submit your budget"}>
 
             <TextField
               required
@@ -126,7 +106,7 @@ const BudgetForm = (props) => {
               value={budgetName}
               onChange={(e) => setBudgetName(e.target.value)}
             />
-          </Tooltip>
+          </Tooltip> */}
           {/* <div className="categoryContainer"> */}
           <TextField
             required
@@ -135,7 +115,7 @@ const BudgetForm = (props) => {
             label="Category Name"
             placeholder="Category Name"
             // style={{ width: '40%' }}
-            disabled={budgetsData && budgetsData.length === 0}
+            // disabled={budgetsData && budgetsData.length === 0}
             margin="normal"
             value={catagory}
             onChange={(e) => setCatagory(e.target.value)}
@@ -149,18 +129,18 @@ const BudgetForm = (props) => {
             placeholder="Category Budget Amount"
             // style={{ width: '30%' }}
             margin="normal"
-            disabled={budgetsData && budgetsData.length === 0}
+            // disabled={budgetsData && budgetsData.length === 0}
             value={catagoryBudget}
             onChange={(e) => setCatagoryBudget(e.target.value)}
           />
-          <Button
+          {/* <Button
             variant="outlined"
             style={{ width: '30%' }}
             disabled={budgetsData && budgetsData.length === 0}
-            onClick={() => handleChipData()}
+            onClick={}
           >
             Add Category
-          </Button>
+          </Button> */}
           {/* </div> */}
           <DialogActions>
             <Button
@@ -170,15 +150,14 @@ const BudgetForm = (props) => {
             >
               CLOSE
             </Button>
-            <Tooltip title={budgetsData && budgetsData.length != 0 ? "You can reset your budget next month!" : "Submit your budget"}>
+            <Tooltip title="Add category">
 
               <Button
                 variant="contained"
-                onClick={handleDataSubmit}
-                // disabled={budgetsData && budgetsData.length != 0}
-
+                onClick={() => handleChipData()}
               >
-                Submit
+                Add Category
+
               </Button>
             </Tooltip>
           </DialogActions>

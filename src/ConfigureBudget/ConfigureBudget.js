@@ -52,7 +52,9 @@ const ConfigureBudget = (props) => {
     budgetsData,
     createCatgory,
     deleteCategory,
+    totalBudgetAmount,
   } = props;
+  const [budgetAmount, setbudgetAmount] = useState(totalBudgetAmount);
   // console.log(budgetsData);
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
     "&:nth-of-type(odd)": {
@@ -112,60 +114,16 @@ const ConfigureBudget = (props) => {
     }
   }, [budgetsData]);
 
-  const handleDataSubmit = async () => {
-    try {
-      await addBudgetData(budgetName, monthlyBudget, chipData);
-    } catch (er) {
-      alert("Something went Wrong");
-    }
-  };
 
-  const handleChipData = async () => {
-    if (budgetsData && Object.keys(budgetsData).length > 0) {
-      try {
-        await createCatgory(catagory, catagoryBudget, budgetId);
-      } catch (er) {
-        alert("Something went Wrong");
-      }
-    }
-    // else {
-    const newChipObject = {
-      ...chipData,
-      ...{ [catagory]: catagoryBudget },
-    };
-    setCalculatedAmmount(
-      parseInt(calculatedAmmount) + parseInt(catagoryBudget)
-    );
-    setChipData(newChipObject);
-    // }
-    // handleDataSubmit();
-    setCatagoryBudget("");
-    setCatagory("");
-  };
-
-  const handleCategoryDelete = async (index) => {
-    if (budgetsData && Object.keys(budgetsData).length > 0) {
-      const { categories } = budgetsData;
-      // console.log(budgetsData.categories[index]);
-      try {
-        await deleteCategory(categories[index]?._id);
-      } catch (err) {
-        alert(`Error in category deletion ${err.message}`);
-      }
-    }
-  };
-  const handleChipDelete = (chipKey, value, index) => {
-    const newDataObject = Object.fromEntries(
-      Object.entries(chipData).filter(([key]) => key !== chipKey)
-    );
-    setCalculatedAmmount(parseInt(calculatedAmmount) - parseInt(value));
-    setChipData(newDataObject);
-    handleCategoryDelete(index);
-  };
-
+  
+  
   const [openDialog, setDialog] = useState(false);
-
+  
   const categories = budgetsData?.categories;
+  useEffect(() => {
+    setbudgetAmount(totalBudgetAmount)
+    // console.log()
+  },[totalBudgetAmount]);
   return (
     <>
       <div className="masterConfigureBudgetContainer">
@@ -173,13 +131,7 @@ const ConfigureBudget = (props) => {
         <div className="totalBudgetHeader">
           <div className="fractionContainerAmount">
             <div className="totalBudget">
-              Budget: {monthlyBudget}
-            </div>
-            <div className="spentAmount">
-              Spent: {calculatedAmmount}
-            </div>
-            <div className="leftWith">
-              Left with: {monthlyBudget - calculatedAmmount}
+              Your Budget: ${budgetAmount}
             </div>
           </div>
         </div>
@@ -191,7 +143,7 @@ const ConfigureBudget = (props) => {
           <SpeedDial
 
             ariaLabel="SpeedDial openIcon example"
-            sx={{ position: 'absolute', bottom: 16, right: 16, border: "2px solod red !important" }}
+            sx={{ position: 'absolute', bottom: 550, right: 20, border: "2px solod red !important" }}
             icon={<SpeedDialIcon openIcon={<EditIcon />} />}
             direction="down"
           >

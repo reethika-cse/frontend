@@ -33,4 +33,38 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   display: none;
 }
 
+.custom-date-input {
+  width: 106% !important;
+  padding: 10px !important;
+  font-size: 16px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 5px !important;
+  box-sizing: border-box !important;
+}
 
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.dropdown-toggle {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.dropdown-menu {
+  width: 100%;
+}
+
+.dropdown-item {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}

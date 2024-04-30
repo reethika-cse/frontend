@@ -5,9 +5,9 @@ import { AgChartsReact } from "ag-charts-react";
 import './Dashboard.css';
 import Navbar from '../Navbar';
 import "ag-charts-enterprise";
-import { Divider } from '@mui/material';
-
-
+import { Divider, Paper } from '@mui/material';
+import { format } from 'date-fns';
+import DatePicker from 'react-datepicker';
 
 const Dashboard = (props) => {
 
@@ -39,6 +39,9 @@ const Dashboard = (props) => {
   const [dataForBudget, setDataForBudget] = useState(budgetsData);
   const [dataForLine, setDataForLine] = useState(barChartExpnesesData)
 
+  const [totalExpanseAmount, setTotalExpanseAmount] = useState(0);
+
+
   useEffect(() => {
     setDataForExpanses(expensesData);
     setDataForBudget(budgetsData);
@@ -47,31 +50,36 @@ const Dashboard = (props) => {
   const [optionsForRadar, setOptionsForRadar] = useState({
     data: [],
     title: {
-      text: "Expanses done in each category",
+      text: "Expenses Done in each category",
     },
     series: [
       {
-        type: "radar-line",
-        angleKey: "department",
-        radiusKey: "quality",
-        radiusName: "Expanse",
-      }
-    ],
-    axes: [
-      {
-        type: "angle-category",
-        shape: "circle",
-      },
-      {
-        type: "radius-number",
-        shape: "circle",
+        type: "donut",
+        calloutLabelKey: "asset",
+        angleKey: "amount",
+        innerRadiusRatio: 0.9,
+        innerLabels: [
+          {
+            text: "Total Expense Amount",
+            fontWeight: "bold",
+          },
+          {
+            text: '',
+            margin: 4,
+            // fontSize: 48,
+            // color: "green",
+          },
+        ],
+        innerCircle: {
+          fill: "#c9fdc9",
+        },
       },
     ],
   });
   function formatNumber(value) {
     value /= 1000_000;
     return `${Math.floor(value)}M`;
-  }
+  };
   const [optionsForBar, setOptionsForBar] = useState({
     data: [],
     title: {
@@ -89,7 +97,6 @@ const Dashboard = (props) => {
         },
         tooltip: {
           renderer: ({ datum, xKey, yKey }) => {
-            // return "asdsad"
             return { title: datum[xKey], content: `$${datum[yKey]}` };
           },
         },
@@ -100,7 +107,7 @@ const Dashboard = (props) => {
         type: "category",
         position: "bottom",
         title: {
-          text: "Allocated AMount",
+          text: "Expense Categories",
         },
       },
       {
@@ -121,12 +128,10 @@ const Dashboard = (props) => {
       },
     ],
   });
-
-
   const [optionsForLine, setOptionsForLine] = useState({
     data: [],
     title: {
-      text: "Expanses Vs Date",
+      text: "Expenses Vs Date",
     },
 
     series: [
@@ -134,7 +139,7 @@ const Dashboard = (props) => {
         type: "line",
         xKey: "week",
         yKey: "belize",
-        yName: "Date: Expanse",
+        yName: "Date: Expense",
       },
 
     ],
@@ -157,19 +162,22 @@ const Dashboard = (props) => {
         },
       },
     ],
-  })
+  });
+
+
+
   useEffect(() => {
     console.error(dataForBudget)
     if (dataForExpanses && dataForExpanses.length > 0) {
       const data = [];
       dataForExpanses.map((expanse) => {
+        setTotalExpanseAmount(totalExpanseAmount + expanse.amount);
         data.push({
-          department: expanse.categoryName,
-          quality: expanse.amount,
+          asset: expanse.categoryName,
+          amount: expanse.amount,
         });
       });
-      console.log(data)
-      setOptionsForRadar({ ...optionsForRadar, data: [...data] });
+      setOptionsForRadar({ ...optionsForRadar, data: [...data], series: [{...optionsForRadar.series[0] , innerLabels: [{...optionsForRadar.series[0].innerLabels[0]}, {...optionsForRadar.series[0].innerLabels[1], text:`$${totalExpanseAmount}`} ]}] });
     }
     if (dataForBudget && Object.keys(dataForBudget).length > 0) {
       const data = [];
@@ -197,34 +205,50 @@ const Dashboard = (props) => {
   }, [dataForExpanses, dataForBudget, dataForLine]);
   // console.log(optionsForRadar)
 
-
+  const [selectedMonth, setSelectedMonth] = useState(format(new Date(), 'yyyy-MM'));
 
 
   const handleFilter = (date) => {
     const monthObj = new Date(date);
     const monthIndex = monthObj.getMonth();
-    console.log(monthIndex)
-
+    console.log(date, monthIndex)
+    setSelectedMonth(date)
     const filterdHBarData = expensesData.filter(expanse => {
       const transactionDate = new Date(expanse.date);
       return transactionDate.getMonth() === monthIndex;
     });
     // debugger
     setDataForExpanses(filterdHBarData);
-
+    console.log(filterdHBarData)
     const filterdLineData = barChartExpnesesData.filter(item => {
       const date = new Date(item.date);
       return date.getMonth() === monthIndex;
     });
     setDataForLine(filterdLineData);
+    if(filterdLineData.length === 0 || filterdHBarData.length === 0) {
+      setOptionsForLine({ ...optionsForLine, data: [] });
+      setOptionsForRadar({ ...optionsForRadar, data: [], series: [{...optionsForRadar.series[0] , innerLabels: [{...optionsForRadar.series[0].innerLabels[0]}, {...optionsForRadar.series[0].innerLabels[1], text:`$${0}`} ]}] });
+    }
   }
 
   return (<>
-    <div className="masterDashBoardContainer">
       <Navbar title={'Dashboard'} />
-      <div className="masteChartsContainer">
+    <div className="masterDashBoardContainer">
+      <Paper elevation={3} className="masteChartsContainer">
         <div className="chartSection">
-          <input type="month" className='filter' onChange={(e) => handleFilter(e.target.value)} name="" id="" />
+          <div className='filterContainer'>
+            <label htmlFor="monthPicker" className="form-label">
+              Select Month Filter
+            </label>
+            <DatePicker
+              id="monthPicker"
+              className="form-control"
+              selected={selectedMonth}
+              onChange={(e) => handleFilter(e)}
+              dateFormat="MM/yyyy"
+              showMonthYearPicker
+            />
+          </div>
           <div className="chartContainer">
             <AgChartsReact options={optionsForRadar} />
           </div>
@@ -239,7 +263,7 @@ const Dashboard = (props) => {
             <AgChartsReact options={optionsForLine} />
           </div>
         </div>
-      </div>
+      </Paper>
 
     </div>
   </>)

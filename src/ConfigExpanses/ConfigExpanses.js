@@ -201,6 +201,7 @@ const ConfigExpanses = (props) => {
             onChange={(e) => handleFilter(e)}
             inputProps={{ "aria-label": "Without label" }}
           >
+            <MenuItem value={"All"}>All</MenuItem>
             {catagoryList.map((catagory) => {
               return <MenuItem value={catagory.name}>{catagory.name}</MenuItem>;
             })}

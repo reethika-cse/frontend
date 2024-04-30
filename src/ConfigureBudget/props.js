@@ -16,4 +16,5 @@ export const mapStateToProps = (state) => ({
   userRegistrationSuccessful: state.userRegistrationSuccessful,
   userDetails: state.userDetails,
   budgetsData: state.budgetsData,
+  totalBudgetAmount: state.totalBudgetAmount,
 });

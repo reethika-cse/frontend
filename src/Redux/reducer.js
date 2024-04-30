@@ -62,6 +62,7 @@ const initialState = {
   userRegistrationSuccessful: false,
   isUserLoggedIn: false,
   budgetsData: {},
+  totalBudgetAmount: 0,
   expensesData: [],
   barChartExpnesesData: [],
 };
@@ -208,11 +209,14 @@ const reducer = (state = initialState, action) => {
     case GET_USER_BUDGET_FULFILLED: {
       const budgets = action.payload;
       if (budgets[0]) {
-        console.log('------------', budgets[0])
-
+        let budgetAmount = 0;
+        budgets[0]?.categories && budgets[0]?.categories.map(cat => {
+          budgetAmount += cat.allocatedAmount;
+        })
         return {
           ...state,
-          budgetsData: { ...state.budgetsData, ...budgets[0] },
+          budgetsData:budgets[0],
+          totalBudgetAmount: budgetAmount,
         }
       }
       else {
@@ -242,7 +246,7 @@ const reducer = (state = initialState, action) => {
       }
     }
     case ADD_BUDGET_CATEGORY_FULFILLED: {
-      toast.success("dsfadf")
+      toast.success("Category Added")
 
       return {
         ...state,

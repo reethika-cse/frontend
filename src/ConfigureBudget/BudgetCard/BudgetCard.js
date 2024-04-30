@@ -28,10 +28,7 @@ const BudgetCard = (props) => {
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           Alocated amount: <span style={{ color: "blue" }}>
-            {allocatedAmount}</span>
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          You have spent: {spend}
+            ${allocatedAmount}</span>
         </Typography>
       </CardContent>
       <CardActions>

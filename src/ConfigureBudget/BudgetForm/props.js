@@ -6,7 +6,7 @@ import {
 } from '../../Redux/action';
 
 export const mapDispatchToProps = (dispatch) => ({
-  addBudgetData: (budgetName, totalAmount, catagories) => dispatch(addBudgetData(budgetName, totalAmount, catagories)),
+  addBudgetData: (budgetName, totalAmount, catagories, categoryName) => dispatch(addBudgetData(budgetName, totalAmount, catagories, categoryName)),
   createCatgory: (name,allocatedAmount,budgetId) => dispatch(createCatgory(name,allocatedAmount,budgetId)),
   deleteCategory: (_id) => dispatch(deleteCategory(_id)),
 });

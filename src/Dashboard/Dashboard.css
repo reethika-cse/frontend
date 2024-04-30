@@ -1,9 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@100;200&family=Nova+Square&family=Outfit:wght@500;700&family=Roboto+Condensed:wght@400;625;900&display=swap');
 
+.masterDashBoardContainer {
+  display: flex;
+  justify-content: center;
+  background-color: #fef7e5;
+}
+
 .masteChartsContainer {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 80vw;
 /*
 * Created with https://www.css-gradient.com
 * Gradient link: https://www.css-gradient.com/?c1=ffe7cc&c2=dd851a&gt=l&gd=dtl
@@ -26,11 +33,9 @@
 
 
 
-.filter {
+.filterContainer {
   position: absolute;
   top: 20px;
-  left: 30px;
-  height: 40px;
-  border-radius: 10px;
-  border: 2px solid #ff9c51;
+  left: 10px;
+  z-index: 1;
 }

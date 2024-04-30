@@ -1,24 +1,17 @@
 import React, { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, TextField, FormControl, InputLabel, Select, MenuItem, Button, DialogActions } from '@mui/material';
-import dayjs from 'dayjs';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
+import DatePicker from 'react-datepicker';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'mdbreact/dist/css/mdb.css';
+import 'react-datepicker/dist/react-datepicker.css';
 import './ExpanseDialog.css';
 const ExpanseDialog = ({ open, setOpen, catagoryList, addExpense, expansesData, }) => {
   const [description, setDescription] = useState('');
   const [amountSpent, setAmountSpent] = useState(0);
   const [categoryObj, setCategoryObj] = useState({});
   const [selectedCatId, setSelectedCatId] = useState("");
-  const [selectedCatagory, setSelectedCatagory] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
 
-
-  const today = new Date();
 
   const options = {
     hour: "numeric",
@@ -28,11 +21,15 @@ const ExpanseDialog = ({ open, setOpen, catagoryList, addExpense, expansesData, 
     month: "short",
     year: "numeric",
   };
-  const date = today.toLocaleString("en-US", options);
+
 
   const handleExpanses = async () => {
     try {
-      await addExpense(description, amountSpent, selectedCatId, selectedDate);
+      console.log(selectedDate);
+      const initialDate = new Date(selectedDate);
+      const adjustedDate = new Date(initialDate.getTime() - initialDate.getTimezoneOffset() * 60000);
+      const formattedDate = adjustedDate.toISOString();
+      await addExpense(description, amountSpent, selectedCatId, formattedDate);
       setDescription("")
       setAmountSpent(0)
       setSelectedDate("")
@@ -70,6 +67,7 @@ const ExpanseDialog = ({ open, setOpen, catagoryList, addExpense, expansesData, 
             label="Category"
             labelId="demo-simple-select-label"
             id="demo-simple-select"
+            aria-placeholder='Select Category'
             onChange={(e) => handleCategorySelection(e.target.value)}
           >
             {catagoryList && catagoryList.length > 0 && catagoryList.map((category) => (
@@ -90,16 +88,25 @@ const ExpanseDialog = ({ open, setOpen, catagoryList, addExpense, expansesData, 
           value={amountSpent}
           onChange={(e) => setAmountSpent(e.target.value)}
         />
-        <label htmlFor="expenseDate" className="form-label">
-          Expense Date
-        </label>
-        <input
-          type="date"
-          className="form-control"
-          id="expenseDate"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
-        />
+        <style>
+
+        </style>
+        <div className="container mt-1" style={{ width: '100%' }}>
+          <div className="row" style={{ width: '100%' }}>
+            <div className="" style={{ padding: '0px', width: '100%' }}>
+              <label htmlFor="expenseDate" className="form-label">Expense Date</label>
+              <DatePicker
+                style={{ width: '100%' }}
+                id="expenseDate"
+                selected={selectedDate}
+                onChange={date => setSelectedDate(date)}
+                className="form-control custom-date-input"
+                placeholderText='Select Date'
+
+              />
+            </div>
+          </div>
+        </div>
         <DialogActions>
           <Button
             variant="contained"
